@@ -44,7 +44,8 @@ const CANCELED: PickerResult = { canceled: true, assets: null };
 function assertAvailable(): void {
   if (Platform.OS !== 'windows') {
     throw new Error(
-      'react-native-windows-image-picker only runs on Windows. Guard your call ' +
+      '@facilitronworks/react-native-windows-image-picker only runs on Windows. Guard '+
+        'your call ' +
         "with Platform.OS === 'windows' or use Platform.select.",
     );
   }

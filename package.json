@@ -1,5 +1,5 @@
 {
-  "name": "react-native-windows-image-picker",
+  "name": "@facilitronworks/react-native-windows-image-picker",
   "version": "0.1.0-pre.0",
   "description": "A native image and document picker TurboModule for React Native Windows (new architecture), backed by Windows.Storage.Pickers.FileOpenPicker.",
   "main": "src/index.ts",

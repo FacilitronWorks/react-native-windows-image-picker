@@ -1,4 +1,4 @@
-# react-native-windows-image-picker
+# @facilitronworks/react-native-windows-image-picker
 
 A native **image and document picker** TurboModule for **React Native Windows** on the **new architecture** (Fabric / Composition), backed by `Windows.Storage.Pickers.FileOpenPicker`.
 
@@ -47,8 +47,8 @@ Two further constraints that are easy to get wrong:
 ## Installation
 
 ```sh
-npm install react-native-windows-image-picker
-# or: yarn add react-native-windows-image-picker
+npm install @facilitronworks/react-native-windows-image-picker
+# or: yarn add @facilitronworks/react-native-windows-image-picker
 ```
 
 Then autolink and rebuild:
@@ -108,7 +108,7 @@ import {
   launchImageLibraryAsync,
   launchDocumentPickerAsync,
   isAvailable,
-} from 'react-native-windows-image-picker';
+} from '@facilitronworks/react-native-windows-image-picker';
 
 // Pick a single image
 const result = await launchImageLibraryAsync({ base64: false });
