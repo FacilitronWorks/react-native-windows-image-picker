@@ -1,0 +1,31 @@
+{
+  "name": "react-native-windows-image-picker",
+  "version": "0.1.0-pre.0",
+  "description": "A native image and document picker TurboModule for React Native Windows (new architecture), backed by Windows.Storage.Pickers.FileOpenPicker.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": ["src", "windows", "README.md", "LICENSE"],
+  "keywords": [
+    "react-native",
+    "react-native-windows",
+    "windows",
+    "image-picker",
+    "document-picker",
+    "file-picker",
+    "turbomodule",
+    "fabric",
+    "winrt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FacilitronWorks/react-native-windows-image-picker.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": ">=0.76.0",
+    "react-native-windows": ">=0.76.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
