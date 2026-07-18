@@ -3,7 +3,13 @@
 A native **image and document picker** TurboModule for **React Native Windows** on the **new architecture** (Fabric / Composition), backed by `Windows.Storage.Pickers.FileOpenPicker`.
 
 > **Status: pre-release (`0.1.0-pre.0`), not yet published to npm.**
-> The C++ implementation is extracted from a shipping production Windows app (RNW 0.83.2, Windows-on-ARM and x64) where it backs real image and file-attachment upload flows. The packaged form — standalone `.vcxproj`, `ReactPackageProvider`, and autolinking config — now exists, but **has not yet been compiled standalone or consumed end-to-end from an app**. An example app and CI build are still to do. Treat `0.1.0-pre.0` as "structurally complete, build-unverified"; wait for `0.1.0` before depending on it in production.
+> The C++ implementation is extracted from a shipping production Windows app (RNW 0.83.2, Windows-on-ARM and x64) where it backs real image and file-attachment upload flows.
+>
+> **Build-verified.** The packaged form compiles: autolinked into a consuming RNW 0.83.2 new-arch app and built clean for ARM64 Debug, producing `RNWImagePicker.dll`, `.winmd`, `.lib` and `.pri`. `autolink-windows` correctly emits both `#include <winrt/RNWImagePicker.h>` and `packageProviders.Append(winrt::RNWImagePicker::ReactPackageProvider())`.
+>
+> **Not yet verified:** runtime behaviour of *this* project's DLL on-device (the source is production-proven, but the binary built from this project has not been exercised), x64 and Release configurations, and there is no example app or CI build yet. Wait for `0.1.0` before depending on it in production.
+>
+> **Building it yourself:** run a NuGet restore first (`msbuild -restore`). Without it the CppWinRT targets never load, `.idl` files fall through to classic `midl.exe` instead of `midlrt`, and every `namespace` declaration fails with `MIDL2025`.
 
 ## Why this exists
 
