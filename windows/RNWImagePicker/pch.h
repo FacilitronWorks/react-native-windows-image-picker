@@ -25,4 +25,9 @@
 #include <string>
 #include <string_view>
 
-using namespace winrt::Windows::Foundation;
+// Deliberately NO `using namespace winrt::Windows::Foundation;` here. It drags
+// winrt::Windows::Foundation::IUnknown into scope for every TU including this
+// pch, and ImagePickerModule.cpp then includes <shobjidl_core.h> (for
+// IInitializeWithWindow); the SDK header can no longer resolve `IUnknown`
+// against ::IUnknown and the file dies in C2872 "ambiguous symbol" 100+ times.
+// Each .cpp opens the namespaces it actually needs.

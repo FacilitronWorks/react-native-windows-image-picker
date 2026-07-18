@@ -493,7 +493,10 @@ namespace winrt::RNWImagePicker::implementation
     {
         m_context = reactContext;
         // Sweep stale PickedImages copies (once per process, background thread).
-        RNWImagePicker::CleanupStalePickedImages();
+        // Leading :: is required: this code sits inside namespace
+        // winrt::RNWImagePicker, so an unqualified RNWImagePicker:: binds to the
+        // WinRT namespace, not the global one holding the C++ free functions.
+        ::RNWImagePicker::CleanupStalePickedImages();
     }
 
     void ImagePickerModule::launchImageLibrary(JSValueObject options, ReactPromise<JSValue> promise) noexcept
