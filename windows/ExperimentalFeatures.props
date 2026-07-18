@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fallback only.
+
+  When this library is autolinked, the .vcxproj imports
+  $(SolutionDir)\ExperimentalFeatures.props (the CONSUMING APP's settings) and
+  this file is not used. It exists so the project can still be opened and
+  inspected standalone in Visual Studio.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Microsoft.ReactNative Experimental Features">
+    <!-- This library targets the New Architecture (Fabric / Composition). -->
+    <RnwNewArch>true</RnwNewArch>
+  </PropertyGroup>
+</Project>

@@ -3,7 +3,7 @@
 A native **image and document picker** TurboModule for **React Native Windows** on the **new architecture** (Fabric / Composition), backed by `Windows.Storage.Pickers.FileOpenPicker`.
 
 > **Status: pre-release (`0.1.0-pre.0`), not yet published to npm.**
-> The C++ implementation is extracted from a shipping production Windows app (RNW 0.83.2, Windows-on-ARM and x64) where it backs real image and file-attachment upload flows. What has **not** yet been validated is this *packaged* form: the standalone build wiring (`.vcxproj`, autolinking, `codegen-windows`) and an example app are still to do. Consume it by vendoring the sources today; wait for `0.1.0` to depend on it as a package.
+> The C++ implementation is extracted from a shipping production Windows app (RNW 0.83.2, Windows-on-ARM and x64) where it backs real image and file-attachment upload flows. The packaged form — standalone `.vcxproj`, `ReactPackageProvider`, and autolinking config — now exists, but **has not yet been compiled standalone or consumed end-to-end from an app**. An example app and CI build are still to do. Treat `0.1.0-pre.0` as "structurally complete, build-unverified"; wait for `0.1.0` before depending on it in production.
 
 ## Why this exists
 
@@ -40,31 +40,58 @@ Two further constraints that are easy to get wrong:
 
 ## Installation
 
-Pre-release: vendor the sources.
+```sh
+npm install react-native-windows-image-picker
+# or: yarn add react-native-windows-image-picker
+```
 
-1. Copy `windows/RNWImagePicker/ImagePickerModule.{h,cpp}` into your RNW app's native project and add both to your `.vcxproj` (`ClInclude` / `ClCompile`).
-2. Copy `src/index.ts` into your app, or import it from a vendored path.
+Then autolink and rebuild:
+
+```sh
+npx react-native autolink-windows
+npx react-native run-windows
+```
+
+That is all the build wiring there is. The package ships a real
+`windows/RNWImagePicker/RNWImagePicker.vcxproj` plus a `react-native.config.js`
+declaring it as a direct Windows dependency, so `autolink-windows` adds the
+`ProjectReference` to your app project and emits the provider registration into
+your generated `AutolinkedNativeModules.g.cpp`. There is nothing to copy, and
+nothing to add to your own `.vcxproj`.
+
+Requires the **new architecture** — `<RnwNewArch>true</RnwNewArch>` in your app's
+`windows/ExperimentalFeatures.props`. Developed against RNW 0.83.x.
 
 ## Integration
 
-The module is an attributed C++/WinRT module, so it is picked up automatically by:
+Autolinking registers the **module** — the attributed `REACT_MODULE` is picked up
+by this library's own `ReactPackageProvider`, which calls
+`AddAttributedModules(packageBuilder, true)` on your behalf. It is then reachable
+from JS as `NativeModules.RNWImagePicker`, or through the typed wrappers in
+`src/index.ts` (see [Usage](#usage)).
+
+**One manual step remains: the host window.** Autolinking cannot register your
+`HWND`, so this hook stays yours. Call it once from `WinMain`, after the app
+window is created:
 
 ```cpp
-AddAttributedModules(builder, true);
+// <winrt/RNWImagePicker.h> is already pulled in for you by AutolinkedNativeModules.g.h
+winrt::RNWImagePicker::ImagePicker::SetHostWindow(reinterpret_cast<uint64_t>(hwnd));
 ```
 
-inside your `IReactPackageProvider`. It is then reachable from JS as `NativeModules.RNWImagePicker`.
+`SetHostWindow` is projected as a static on an `ImagePicker` runtimeclass rather
+than exposed as a plain C++ function, because autolinking hands your app this
+library's **WinMD projection** (`<winrt/RNWImagePicker.h>`) but not its raw
+headers — and the library links as its own DLL, whose exports are just the WinRT
+activation entry points. The internal free function
+`RNWImagePicker::SetHostWindow(void*)` still exists for anyone vendoring the
+sources directly.
 
-**One required hook.** Register your top-level window once from `WinMain`, after the window is created:
-
-```cpp
-#include "ImagePickerModule.h"
-
-// ...once the app window exists:
-RNWImagePicker::SetHostWindow(hwnd);
-```
-
-This is the only integration point, and it exists because it is the one *fully* reliable source for the window the picker must parent to — it is captured directly from the `AppWindow` the RNW host created, rather than inferred. If you skip it the fallbacks usually work, but "usually" is not what you want behind a modal dialog.
+Why it matters: this is the one *fully* reliable source for the window the picker
+must parent to — it is captured directly from the `AppWindow` the RNW host
+created, rather than inferred. If you skip it the `GetActiveWindow` /
+`GetForegroundWindow` fallbacks usually work, but "usually" is not what you want
+behind a modal dialog.
 
 > A future version will prefer `ReactCoreInjection::GetTopLevelWindowId(context.Properties().Handle())` so the `WinMain` hook becomes optional. The current fallback chain is the version that has actually shipped, so it is what is published here.
 
@@ -134,7 +161,8 @@ Every picked file is copied into `LocalFolder\PickedFiles` and the returned `uri
 
 ## Roadmap
 
-- [ ] Standalone `.vcxproj` + autolinking so this installs as a normal package
+- [x] Standalone `.vcxproj` + `ReactPackageProvider` + `react-native.config.js` so this installs and autolinks as a normal package
+- [ ] Verify the project actually compiles, and autolinks cleanly into a real app
 - [ ] `ReactCoreInjection::GetTopLevelWindowId` to make the `WinMain` hook optional
 - [ ] Example app + CI build
 - [ ] Camera capture (currently a separate module)

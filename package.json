@@ -4,7 +4,22 @@
   "description": "A native image and document picker TurboModule for React Native Windows (new architecture), backed by Windows.Storage.Pickers.FileOpenPicker.",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "files": ["src", "windows", "README.md", "LICENSE"],
+  "source": "src/index.ts",
+  "react-native": "src/index.ts",
+  "files": [
+    "src",
+    "windows/RNWImagePicker/RNWImagePicker.vcxproj",
+    "windows/RNWImagePicker/RNWImagePicker.vcxproj.filters",
+    "windows/RNWImagePicker/RNWImagePicker.def",
+    "windows/RNWImagePicker/PropertySheet.props",
+    "windows/RNWImagePicker/*.idl",
+    "windows/RNWImagePicker/*.h",
+    "windows/RNWImagePicker/*.cpp",
+    "windows/ExperimentalFeatures.props",
+    "react-native.config.js",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "react-native",
     "react-native-windows",
@@ -24,6 +39,13 @@
   "peerDependencies": {
     "react-native": ">=0.76.0",
     "react-native-windows": ">=0.76.0"
+  },
+  "react-native-windows": {
+    "init-windows": {
+      "name": "RNWImagePicker",
+      "namespace": "RNWImagePicker",
+      "template": "cpp-lib"
+    }
   },
   "publishConfig": {
     "access": "public"

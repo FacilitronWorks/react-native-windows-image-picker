@@ -1,0 +1,23 @@
+namespace RNWImagePicker
+{
+    // Host-window registration, projected through the library's WinMD.
+    //
+    // Autolinking gives the consuming app the generated projection header
+    // <winrt/RNWImagePicker.h> but NOT this project's raw C++ headers, and the
+    // library links as its own DLL whose .def exports only the WinRT activation
+    // entry points. So the plain C++ free function RNWImagePicker::SetHostWindow
+    // is not reachable from an app that merely autolinks the package -- this
+    // static runtimeclass is the boundary-crossing form of it.
+    [webhosthidden]
+    static runtimeclass ImagePicker
+    {
+        // Pass the app's top-level HWND (cast to UInt64). Call once from
+        // WinMain, after the window exists. See README: Installation.
+        static void SetHostWindow(UInt64 hwnd);
+
+        // Optional: force the once-per-process sweep of stale copies in
+        // LocalFolder\PickedFiles. Normally kicked off from the module's
+        // REACT_INIT, so apps do not need to call this.
+        static void CleanupStalePickedImages();
+    };
+}
